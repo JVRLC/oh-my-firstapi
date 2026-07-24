@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fulki API — Carte du système</title>
+<style>
+  :root {
+    --bg: #eef1ec;
+    --surface: #ffffff;
+    --text: #1c2530;
+    --muted: #5c6b6a;
+    --border: #ccd4c8;
+    --gold: #a5711d;
+    --teal: #2f6f6b;
+    --mono-bg: #e4e8de;
+    --verb-get: #2f6f6b;
+    --verb-post: #a5711d;
+    --verb-put: #6a5a9a;
+    --verb-delete: #a5433a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12161c;
+      --surface: #1a2029;
+      --text: #e6e2d3;
+      --muted: #93a09e;
+      --border: #2c3644;
+      --gold: #d9a544;
+      --teal: #5fb3ac;
+      --mono-bg: #0f1319;
+      --verb-get: #5fb3ac;
+      --verb-post: #d9a544;
+      --verb-put: #a091d6;
+      --verb-delete: #e08278;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { background: var(--bg); }
+  body {
+    color: var(--text);
+    font-family: Charter, "Iowan Old Style", "Georgia", serif;
+    font-size: 16px;
+    line-height: 1.6;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
+  }
+  h1, h2 {
+    font-family: "Palatino Linotype", "Iowan Old Style", Palatino, Georgia, serif;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .eyebrow {
+    font-family: -apple-system, "Segoe UI", ui-sans-serif, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.72rem;
+    color: var(--gold);
+    font-weight: 600;
+    margin: 0 0 0.6rem;
+  }
+  header h1 { font-size: 2.1rem; margin: 0 0 0.6rem; }
+  header p.lede {
+    font-family: -apple-system, "Segoe UI", ui-sans-serif, sans-serif;
+    color: var(--muted);
+    font-size: 1.05rem;
+    max-width: 65ch;
+    margin: 0 0 1.4rem;
+  }
+  .badges { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.6rem; }
+  .badge {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.78rem;
+    background: var(--mono-bg);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 0.28rem 0.65rem;
+    border-radius: 5px;
+  }
+  main { display: flex; flex-direction: column; gap: 2.75rem; }
+  section h2 {
+    font-size: 1.35rem;
+    margin: 0 0 0.35rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+  section h2 .num {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.85rem;
+    color: var(--gold);
+    font-weight: 500;
+  }
+  section p.desc {
+    font-family: -apple-system, "Segoe UI", ui-sans-serif, sans-serif;
+    color: var(--muted);
+    font-size: 0.95rem;
+    max-width: 70ch;
+    margin: 0 0 1.1rem;
+  }
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.4rem;
+    overflow-x: auto;
+  }
+  .panel .mermaid { display: flex; justify-content: center; }
+  code, .path {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.85em;
+    background: var(--mono-bg);
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: -apple-system, "Segoe UI", ui-sans-serif, sans-serif;
+    font-size: 0.92rem;
+  }
+  th {
+    text-align: left;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    font-weight: 600;
+    padding: 0 0.8rem 0.6rem;
+    border-bottom: 1px solid var(--border);
+  }
+  td { padding: 0.65rem 0.8rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .verb {
+    display: inline-block;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    color: var(--surface);
+    white-space: nowrap;
+  }
+  .verb-get { background: var(--verb-get); }
+  .verb-post { background: var(--verb-post); }
+  .verb-put { background: var(--verb-put); }
+  .verb-delete { background: var(--verb-delete); }
+  footer {
+    margin-top: 3.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-family: -apple-system, "Segoe UI", ui-sans-serif, sans-serif;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  @media (max-width: 640px) {
+    body { padding: 2rem 1.1rem 3.5rem; }
+    header h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">Fulki API · schéma du système</p>
+  <h1>Comment le repo est construit</h1>
+  <p class="lede">
+    Backend FastAPI pour une app de streaming de khassaïdes (poèmes religieux
+    wolofal/arabes) récités par des kourels : catalogue, auth par OTP, position
+    de lecture, et URLs audio présignées vers AWS S3.
+  </p>
+  <div class="badges">
+    <span class="badge">FastAPI</span>
+    <span class="badge">SQLAlchemy · async</span>
+    <span class="badge">SQLite → PostgreSQL</span>
+    <span class="badge">JWT (python-jose)</span>
+    <span class="badge">boto3 · S3 presigned URL</span>
+  </div>
+</header>
+
+<main>
+  <section>
+    <h2><span class="num">01</span> Modèle de données</h2>
+    <p class="desc">
+      Un <code>Kourel</code> interprète des <code>Khassaide</code> (chacun découpé en
+      <code>Verse</code>) ; chaque couple donne un <code>Recording</code>, calé verset
+      par verset via <code>VerseTiming</code>. Côté utilisateur, <code>User</code>
+      accumule progression, favoris et téléchargements.
+    </p>
+    <div class="panel">
+<pre class="mermaid">
+classDiagram
+    class Kourel {
+        +string id
+        +string name
+        +string city
+        +bool is_partner
+        +float revenue_share
+    }
+    class Khassaide {
+        +string id
+        +string slug
+        +string title_latin
+        +string title_arabic
+        +string meaning_fr
+    }
+    class Verse {
+        +string id
+        +int position
+        +string text_arabic
+        +string translation_fr
+        +bool is_validated
+    }
+    class Recording {
+        +string id
+        +int duration_sec
+        +string audio_path
+        +bool is_published
+        +int play_count
+    }
+    class VerseTiming {
+        +int start_ms
+        +int end_ms
+    }
+    class User {
+        +string id
+        +string phone
+        +string display_name
+        +bool is_premium
+    }
+    class ListeningProgress {
+        +int position_ms
+    }
+    class Favorite {
+        +datetime created_at
+    }
+    class Download {
+        +datetime downloaded_at
+    }
+
+    Kourel "1" --> "*" Recording
+    Khassaide "1" --> "*" Recording
+    Khassaide "1" --> "*" Verse : versets
+    Recording "1" --> "*" VerseTiming
+    Verse "1" --> "*" VerseTiming
+    User "1" --> "*" ListeningProgress
+    User "1" --> "*" Favorite
+    User "1" --> "*" Download
+    Recording "1" --> "*" ListeningProgress
+    Recording "1" --> "*" Favorite
+    Recording "1" --> "*" Download
+</pre>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span> Architecture</h2>
+    <p class="desc">
+      Quatre routeurs FastAPI s'appuient sur trois services et une base de
+      données. L'audio ne transite jamais par l'API : <code>signing_service</code>
+      ne fait que générer une URL S3 présignée (6 h), que le client utilise pour
+      streamer directement depuis le bucket.
+    </p>
+    <div class="panel">
+<pre class="mermaid">
+flowchart TB
+    A["App cliente"]
+
+    subgraph API["Fulki API — FastAPI"]
+        direction TB
+        R1["auth.py — /auth"]
+        R2["catalog.py — /recordings /kourels /search"]
+        R3["player.py — /recordings/id/timestamps, /signed-url"]
+        R4["me.py — /me/progress /favorites /downloads"]
+        S1["otp_service"]
+        S2["security — JWT"]
+        S3["signing_service — boto3"]
+    end
+
+    DB[("PostgreSQL / SQLite")]
+    BUCKET[("AWS S3 — fichiers audio")]
+
+    A -- HTTPS JSON --> R1
+    A -- HTTPS JSON --> R2
+    A -- HTTPS JSON --> R3
+    A -- HTTPS JSON --> R4
+
+    R1 --> S1
+    R1 --> S2
+    R4 --> S2
+    R3 --> S3
+
+    R1 --> DB
+    R2 --> DB
+    R3 --> DB
+    R4 --> DB
+
+    S3 -- URL présignée --> BUCKET
+    A -. stream direct, TTL 6h .-> BUCKET
+</pre>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span> Lire un enregistrement</h2>
+    <p class="desc">
+      Séquence complète depuis la demande du client jusqu'au streaming réel de
+      l'audio, en passant par l'incrément du compteur d'écoutes et la
+      génération de la presigned URL.
+    </p>
+    <div class="panel">
+<pre class="mermaid">
+sequenceDiagram
+    participant C as App cliente
+    participant P as player.py
+    participant D as Base de données
+    participant S as signing_service
+    participant B as AWS S3
+
+    C->>P: POST /recordings/{id}/signed-url
+    P->>D: SELECT Recording WHERE id AND is_published
+    D-->>P: enregistrement trouvé
+    P->>D: play_count += 1
+    P->>S: signed_url(audio_path)
+    S->>S: generate_presigned_url(GetObject, 6h)
+    S-->>P: url, expires_in_sec
+    P-->>C: 200 { url, expires_in_sec }
+    C->>B: GET url
+    B-->>C: flux audio
+</pre>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span> Endpoints</h2>
+    <p class="desc">Vue d'ensemble de toutes les routes exposées, regroupées par routeur.</p>
+    <div class="panel" style="overflow-x:auto;">
+      <table>
+        <thead>
+          <tr><th>Route</th><th>Rôle</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="verb verb-post">POST</span> <span class="path">/auth/otp</span></td><td>Envoie un code (renvoyé en clair si <code>OTP_DEV_MODE</code>)</td></tr>
+          <tr><td><span class="verb verb-post">POST</span> <span class="path">/auth/verify</span></td><td>Vérifie le code, renvoie un JWT</td></tr>
+          <tr><td><span class="verb verb-get">GET</span> <span class="path">/auth/me</span></td><td>Profil courant</td></tr>
+          <tr><td><span class="verb verb-get">GET</span> <span class="path">/recordings</span></td><td>Catalogue publié, filtrable par kourel</td></tr>
+          <tr><td><span class="verb verb-get">GET</span> <span class="path">/recordings/{id}</span></td><td>Détail + versets</td></tr>
+          <tr><td><span class="verb verb-get">GET</span> <span class="path">/recordings/{id}/timestamps</span></td><td>Calage verset ↔ audio</td></tr>
+          <tr><td><span class="verb verb-post">POST</span> <span class="path">/recordings/{id}/signed-url</span></td><td>URL S3 présignée (6 h)</td></tr>
+          <tr><td><span class="verb verb-get">GET</span> <span class="path">/kourels</span></td><td>Liste des kourels</td></tr>
+          <tr><td><span class="verb verb-get">GET</span> <span class="path">/search?q=</span></td><td>Recherche titre / kourel</td></tr>
+          <tr><td><span class="verb verb-get">GET</span> <span class="path">/me/progress</span></td><td>Reprendre l'écoute</td></tr>
+          <tr><td><span class="verb verb-put">PUT</span> <span class="path">/me/progress</span></td><td>Sauver la position</td></tr>
+          <tr><td><span class="verb verb-post">POST</span> <span class="path">/me/favorites/{id}</span></td><td>Ajouter un favori</td></tr>
+          <tr><td><span class="verb verb-delete">DELETE</span> <span class="path">/me/favorites/{id}</span></td><td>Retirer un favori</td></tr>
+          <tr><td><span class="verb verb-post">POST</span> <span class="path">/me/downloads/{id}</span></td><td>Télécharger (quota gratuit : 3)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Généré depuis le code source de <code>fulki-api</code> — reflète l'état actuel des modèles, routeurs et services.
+  Nécessite une connexion internet pour charger Mermaid (CDN).
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  const css = getComputedStyle(document.documentElement);
+  const v = (name) => css.getPropertyValue(name).trim();
+
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: "base",
+    themeVariables: {
+      fontFamily: "Charter, 'Iowan Old Style', Georgia, serif",
+      background: v("--surface"),
+      mainBkg: v("--surface"),
+      primaryColor: v("--surface"),
+      primaryTextColor: v("--text"),
+      primaryBorderColor: v("--gold"),
+      secondaryColor: v("--mono-bg"),
+      secondaryBorderColor: v("--teal"),
+      tertiaryColor: v("--mono-bg"),
+      tertiaryBorderColor: v("--border"),
+      lineColor: v("--teal"),
+      textColor: v("--text"),
+      nodeTextColor: v("--text"),
+      clusterBkg: v("--mono-bg"),
+      clusterBorder: v("--border"),
+      edgeLabelBackground: v("--surface"),
+      titleColor: v("--text"),
+      classText: v("--text"),
+      actorBkg: v("--mono-bg"),
+      actorBorder: v("--gold"),
+      actorTextColor: v("--text"),
+      signalColor: v("--text"),
+      signalTextColor: v("--text"),
+      labelBoxBkgColor: v("--mono-bg"),
+      labelBoxBorderColor: v("--gold"),
+      labelTextColor: v("--text"),
+      loopTextColor: v("--muted"),
+      noteBkgColor: v("--mono-bg"),
+      noteBorderColor: v("--border"),
+      noteTextColor: v("--text"),
+    },
+  });
+</script>
+</body>
+</html>
