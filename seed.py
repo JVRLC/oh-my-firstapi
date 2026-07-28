@@ -1,4 +1,4 @@
-"""Populates the database from seed_data.json for local testing."""
+"""Populates the database from seed_data/*.json for local testing."""
 import asyncio
 import json
 from pathlib import Path
@@ -6,11 +6,12 @@ from pathlib import Path
 from app.database import Base, SessionLocal, engine
 from app.models import Khassaide, Kourel, Recording, Verse, VerseTiming
 
-SEED_FILE = Path(__file__).parent / "seed_data.json"
+SEED_DIR = Path(__file__).parent / "seed_data"
 
 
 async def main():
-    data = json.loads(SEED_FILE.read_text())
+    kourels_data = json.loads((SEED_DIR / "kourels.json").read_text())
+    khassaides_data = json.loads((SEED_DIR / "khassaides.json").read_text())
 
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
@@ -19,7 +20,7 @@ async def main():
     async with SessionLocal() as db:
         kourels_by_name: dict[str, Kourel] = {}
 
-        for kourel_data in data["kourels"]:
+        for kourel_data in kourels_data:
             children_data = kourel_data.pop("children", [])
             parent = Kourel(**kourel_data)
             db.add(parent)
@@ -32,7 +33,7 @@ async def main():
                 await db.flush()
                 kourels_by_name[child.name] = child
 
-        for kh_data in data["khassaides"]:
+        for kh_data in khassaides_data:
             verses_data = kh_data.pop("verses")
             duration_sec = kh_data.pop("duration_sec")
             audio_path = kh_data.pop("audio_path")

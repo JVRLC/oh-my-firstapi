@@ -1,0 +1,19 @@
+[
+  {
+    "name": "Hizbut Tarqiyyah Touba",
+    "city": "Touba",
+    "bio": "Association mère qui chapeaute les kourels de la Hizbut Tarqiyyah à Touba.",
+    "children": [
+      {
+        "name": "Kourel Djaraaf",
+        "city": "Touba",
+        "bio": "Sous-kourel de la Hizbut Tarqiyyah, quartier Djaraaf."
+      },
+      {
+        "name": "Kourel Darou Marnane",
+        "city": "Touba",
+        "bio": "Sous-kourel de la Hizbut Tarqiyyah, quartier Darou Marnane."
+      }
+    ]
+  }
+]
