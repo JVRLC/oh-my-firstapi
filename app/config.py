@@ -16,6 +16,9 @@ class Settings(BaseSettings):
     aws_access_key_id: str | None = None
     aws_secret_access_key: str | None = None
     s3_bucket_name: str = "fulki-audio"
+    # Set to a local MinIO endpoint (e.g. http://localhost:9000) for local dev;
+    # leave empty to hit real AWS S3.
+    aws_endpoint_url: str | None = None
 
     class Config:
         env_file = ".env"

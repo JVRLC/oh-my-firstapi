@@ -9,6 +9,7 @@ class KourelOut(BaseModel):
     city: str | None = None
     bio: str | None = None
     photo_url: str | None = None
+    parent_id: str | None = None
 
 
 class VerseOut(BaseModel):

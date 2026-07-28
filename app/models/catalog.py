@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, Numeric, String, Text, UniqueConstraint
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..database import Base
@@ -18,7 +18,15 @@ class Kourel(Base):
     name: Mapped[str] = mapped_column(String(150))
     city: Mapped[str | None] = mapped_column(String(100), nullable=True)
     bio: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # Set when this kourel is a sub-group of a larger association (e.g. HT Touba).
+    parent_id: Mapped[str | None] = mapped_column(
+        ForeignKey("kourels.id", ondelete="CASCADE"), nullable=True
+    )
 
+    parent: Mapped["Kourel | None"] = relationship(
+        remote_side=[id], back_populates="children"
+    )
+    children: Mapped[list["Kourel"]] = relationship(back_populates="parent")
     recordings: Mapped[list["Recording"]] = relationship(back_populates="kourel")
 
 
@@ -62,6 +70,7 @@ class Recording(Base):
     duration_sec: Mapped[int] = mapped_column(Integer)
     # Path relative to the CDN, signed on demand.
     audio_path: Mapped[str] = mapped_column(Text)
+    is_published: Mapped[bool] = mapped_column(Boolean, default=False)
     play_count: Mapped[int] = mapped_column(Integer, default=0)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 

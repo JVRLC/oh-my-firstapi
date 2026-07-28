@@ -1,74 +1,59 @@
-"""Populates the database with one kourel and a few khassaides for local testing."""
+"""Populates the database from seed_data.json for local testing."""
 import asyncio
+import json
+from pathlib import Path
 
 from app.database import Base, SessionLocal, engine
 from app.models import Khassaide, Kourel, Recording, Verse, VerseTiming
 
-VERSES = [
-    (
-        "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
-        "Bismillāhi r-Raḥmāni r-Raḥīm",
-        "Au nom d'Allah, le Tout Miséricordieux, le Très Miséricordieux",
-    ),
-    (
-        "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
-        "Al-ḥamdu lillāhi rabbi l-ʿālamīn",
-        "Louange à Allah, Seigneur des mondes",
-    ),
-    ("— vers ٣ —", "Texte du khassaïde à intégrer", "Traduction à valider"),
-    ("— vers ٤ —", "Texte du khassaïde à intégrer", "Traduction à valider"),
-]
-
-KHASSAIDES = [
-    ("matlaboul-fawzeyni", "Matlaboul Fawzeyni", "مطلب", "La quête des deux bonheurs", 2536),
-    ("djazboul-khoulob", "Djazboul Khoulob", "جذب", "L'attraction des cœurs", 2100),
-    ("mawahibou-nafih", "Mawâhibou Nafih", "مواهب", "Les dons utiles", 1680),
-]
+SEED_FILE = Path(__file__).parent / "seed_data.json"
 
 
 async def main():
+    data = json.loads(SEED_FILE.read_text())
+
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
 
     async with SessionLocal() as db:
-        kourel = Kourel(
-            name="Kourel Hizbut-Tarqiyyah",
-            city="Touba",
-            bio="Le Kourel Hizbut-Tarqiyyah perpétue la déclamation des khassaïdes "
-            "de Cheikh Ahmadou Bamba depuis Touba.",
-            is_partner=True,
-            revenue_share=30,
-        )
-        db.add(kourel)
-        await db.flush()
+        kourels_by_name: dict[str, Kourel] = {}
 
-        for slug, title, arabic, meaning, duration in KHASSAIDES:
-            kh = Khassaide(
-                slug=slug, title_latin=title, title_arabic=arabic, meaning_fr=meaning
-            )
+        for kourel_data in data["kourels"]:
+            children_data = kourel_data.pop("children", [])
+            parent = Kourel(**kourel_data)
+            db.add(parent)
+            await db.flush()
+            kourels_by_name[parent.name] = parent
+
+            for child_data in children_data:
+                child = Kourel(parent_id=parent.id, **child_data)
+                db.add(child)
+                await db.flush()
+                kourels_by_name[child.name] = child
+
+        for kh_data in data["khassaides"]:
+            verses_data = kh_data.pop("verses")
+            duration_sec = kh_data.pop("duration_sec")
+            audio_path = kh_data.pop("audio_path")
+            kourel_name = kh_data.pop("kourel")
+
+            kh = Khassaide(**kh_data)
             db.add(kh)
             await db.flush()
 
             verses = []
-            for i, (ar, tl, fr) in enumerate(VERSES, start=1):
-                v = Verse(
-                    khassaide_id=kh.id,
-                    position=i,
-                    text_arabic=ar,
-                    translit=tl,
-                    translation_fr=fr,
-                    is_validated=i <= 2,
-                )
+            for i, v_data in enumerate(verses_data, start=1):
+                v = Verse(khassaide_id=kh.id, position=i, **v_data)
                 db.add(v)
                 verses.append(v)
             await db.flush()
 
             rec = Recording(
                 khassaide_id=kh.id,
-                kourel_id=kourel.id,
-                duration_sec=duration,
-                audio_path=f"recordings/{slug}-ht/master.m3u8",
+                kourel_id=kourels_by_name[kourel_name].id,
+                duration_sec=duration_sec,
+                audio_path=audio_path,
                 is_published=True,
             )
             db.add(rec)

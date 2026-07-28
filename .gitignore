@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+fulki.db
+.DS_Store
