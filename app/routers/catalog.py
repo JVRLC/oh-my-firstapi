@@ -12,7 +12,8 @@ router = APIRouter(tags=["catalog"])
 
 def _with_relations(stmt):
     return stmt.options(
-        selectinload(Recording.khassaide), selectinload(Recording.kourel)
+        selectinload(Recording.khassaide),
+        selectinload(Recording.kourel),
     )
 
 
@@ -31,20 +32,12 @@ async def list_recordings(
 
 @router.get("/recordings/{recording_id}", response_model=RecordingDetail)
 async def get_recording(recording_id: str, db: AsyncSession = Depends(get_db)):
-    stmt = _with_relations(select(Recording)).options(
-        selectinload(Recording.khassaide).selectinload(Khassaide.verses)
-    ).where(Recording.id == recording_id)
+    stmt = _with_relations(select(Recording)).where(Recording.id == recording_id)
     rec = (await db.execute(stmt)).scalar_one_or_none()
     if rec is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "Enregistrement introuvable")
 
-    return RecordingDetail(
-        id=rec.id,
-        duration_sec=rec.duration_sec,
-        khassaide=rec.khassaide,
-        kourel=rec.kourel,
-        verses=rec.khassaide.verses,
-    )
+    return rec
 
 
 @router.get("/kourels", response_model=list[KourelOut])

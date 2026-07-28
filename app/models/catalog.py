@@ -16,6 +16,8 @@ class Kourel(Base):
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
     name: Mapped[str] = mapped_column(String(150))
+    # Filesystem/S3-safe name, used to build the storage folder for this kourel's audio.
+    slug: Mapped[str] = mapped_column(String(150), unique=True)
     city: Mapped[str | None] = mapped_column(String(100), nullable=True)
     bio: Mapped[str | None] = mapped_column(Text, nullable=True)
     # Set when this kourel is a sub-group of a larger association (e.g. HT Touba).
@@ -40,33 +42,18 @@ class Khassaide(Base):
     meaning_fr: Mapped[str | None] = mapped_column(String(300), nullable=True)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    verses: Mapped[list["Verse"]] = relationship(
-        back_populates="khassaide", order_by="Verse.position"
-    )
     recordings: Mapped[list["Recording"]] = relationship(back_populates="khassaide")
-
-
-class Verse(Base):
-    __tablename__ = "verses"
-    __table_args__ = (UniqueConstraint("khassaide_id", "position"),)
-
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
-    khassaide_id: Mapped[str] = mapped_column(ForeignKey("khassaides.id", ondelete="CASCADE"))
-    position: Mapped[int] = mapped_column(Integer)
-    text_arabic: Mapped[str] = mapped_column(Text)
-    translit: Mapped[str | None] = mapped_column(Text, nullable=True)
-    translation_fr: Mapped[str | None] = mapped_column(Text, nullable=True)
-
-    khassaide: Mapped[Khassaide] = relationship(back_populates="verses")
 
 
 class Recording(Base):
     __tablename__ = "recordings"
-    __table_args__ = (UniqueConstraint("khassaide_id", "kourel_id"),)
+    __table_args__ = (UniqueConstraint("khassaide_id", "kourel_id", "event_name"),)
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
     khassaide_id: Mapped[str] = mapped_column(ForeignKey("khassaides.id", ondelete="CASCADE"))
     kourel_id: Mapped[str] = mapped_column(ForeignKey("kourels.id", ondelete="CASCADE"))
+    # Free-text: the gathering this was recorded at (e.g. "Magal de Touba 2025").
+    event_name: Mapped[str | None] = mapped_column(String(200), nullable=True)
     duration_sec: Mapped[int] = mapped_column(Integer)
     # Path relative to the CDN, signed on demand.
     audio_path: Mapped[str] = mapped_column(Text)
@@ -76,22 +63,3 @@ class Recording(Base):
 
     khassaide: Mapped[Khassaide] = relationship(back_populates="recordings")
     kourel: Mapped[Kourel] = relationship(back_populates="recordings")
-    timings: Mapped[list["VerseTiming"]] = relationship(
-        back_populates="recording", order_by="VerseTiming.start_ms"
-    )
-
-
-class VerseTiming(Base):
-    __tablename__ = "verse_timestamps"
-
-    recording_id: Mapped[str] = mapped_column(
-        ForeignKey("recordings.id", ondelete="CASCADE"), primary_key=True
-    )
-    verse_id: Mapped[str] = mapped_column(
-        ForeignKey("verses.id", ondelete="CASCADE"), primary_key=True
-    )
-    start_ms: Mapped[int] = mapped_column(Integer)
-    end_ms: Mapped[int] = mapped_column(Integer)
-
-    recording: Mapped[Recording] = relationship(back_populates="timings")
-    verse: Mapped[Verse] = relationship()

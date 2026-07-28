@@ -1,95 +1,10 @@
 [
   {
-    "slug": "matlaboul-fawzeyni",
-    "title_latin": "Matlaboul Fawzeyni",
-    "title_arabic": "مطلب",
-    "meaning_fr": "La quête des deux bonheurs",
-    "duration_sec": 2536,
-    "audio_path": "recordings/matlaboul-fawzeyni-ht/master.m3u8",
-    "kourel": "Kourel Djaraaf",
-    "verses": [
-      {
-        "text_arabic": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
-        "translit": "Bismillāhi r-Raḥmāni r-Raḥīm",
-        "translation_fr": "Au nom d'Allah, le Tout Miséricordieux, le Très Miséricordieux"
-      },
-      {
-        "text_arabic": "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
-        "translit": "Al-ḥamdu lillāhi rabbi l-ʿālamīn",
-        "translation_fr": "Louange à Allah, Seigneur des mondes"
-      },
-      {
-        "text_arabic": "— vers ٣ —",
-        "translit": "Texte du khassaïde à intégrer",
-        "translation_fr": "Traduction à valider"
-      },
-      {
-        "text_arabic": "— vers ٤ —",
-        "translit": "Texte du khassaïde à intégrer",
-        "translation_fr": "Traduction à valider"
-      }
-    ]
-  },
-  {
-    "slug": "djazboul-khoulob",
-    "title_latin": "Djazboul Khoulob",
-    "title_arabic": "جذب",
-    "meaning_fr": "L'attraction des cœurs",
-    "duration_sec": 2100,
-    "audio_path": "recordings/djazboul-khoulob-ht/master.m3u8",
-    "kourel": "Kourel Darou Marnane",
-    "verses": [
-      {
-        "text_arabic": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
-        "translit": "Bismillāhi r-Raḥmāni r-Raḥīm",
-        "translation_fr": "Au nom d'Allah, le Tout Miséricordieux, le Très Miséricordieux"
-      },
-      {
-        "text_arabic": "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
-        "translit": "Al-ḥamdu lillāhi rabbi l-ʿālamīn",
-        "translation_fr": "Louange à Allah, Seigneur des mondes"
-      },
-      {
-        "text_arabic": "— vers ٣ —",
-        "translit": "Texte du khassaïde à intégrer",
-        "translation_fr": "Traduction à valider"
-      },
-      {
-        "text_arabic": "— vers ٤ —",
-        "translit": "Texte du khassaïde à intégrer",
-        "translation_fr": "Traduction à valider"
-      }
-    ]
-  },
-  {
-    "slug": "mawahibou-nafih",
-    "title_latin": "Mawâhibou Nafih",
-    "title_arabic": "مواهب",
-    "meaning_fr": "Les dons utiles",
-    "duration_sec": 1680,
-    "audio_path": "recordings/mawahibou-nafih-ht/master.m3u8",
-    "kourel": "Hizbut Tarqiyyah Touba",
-    "verses": [
-      {
-        "text_arabic": "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ",
-        "translit": "Bismillāhi r-Raḥmāni r-Raḥīm",
-        "translation_fr": "Au nom d'Allah, le Tout Miséricordieux, le Très Miséricordieux"
-      },
-      {
-        "text_arabic": "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
-        "translit": "Al-ḥamdu lillāhi rabbi l-ʿālamīn",
-        "translation_fr": "Louange à Allah, Seigneur des mondes"
-      },
-      {
-        "text_arabic": "— vers ٣ —",
-        "translit": "Texte du khassaïde à intégrer",
-        "translation_fr": "Traduction à valider"
-      },
-      {
-        "text_arabic": "— vers ٤ —",
-        "translit": "Texte du khassaïde à intégrer",
-        "translation_fr": "Traduction à valider"
-      }
-    ]
+    "title_latin": "Yaqûlu Ahmadul Mbakkiyu",
+    "title_arabic": "",
+    "meaning_fr": "",
+    "duration_sec": 479,
+    "kourel": "Kourel Serigne Massamba",
+    "event": "Magal de Touba 2025"
   }
 ]

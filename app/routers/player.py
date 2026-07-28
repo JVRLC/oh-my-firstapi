@@ -1,29 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 
 from ..database import get_db
-from ..models import Recording, VerseTiming
-from ..schemas.catalog import SignedUrlOut, TimingOut
+from ..models import Recording
+from ..schemas.catalog import SignedUrlOut
 from ..services.signing_service import signed_url
 
 router = APIRouter(prefix="/recordings", tags=["player"])
-
-
-@router.get("/{recording_id}/timestamps", response_model=list[TimingOut])
-async def timestamps(recording_id: str, db: AsyncSession = Depends(get_db)):
-    stmt = (
-        select(VerseTiming)
-        .options(selectinload(VerseTiming.verse))
-        .where(VerseTiming.recording_id == recording_id)
-        .order_by(VerseTiming.start_ms)
-    )
-    rows = (await db.execute(stmt)).scalars().all()
-    return [
-        TimingOut(verse_position=r.verse.position, start_ms=r.start_ms, end_ms=r.end_ms)
-        for r in rows
-    ]
 
 
 @router.post("/{recording_id}/signed-url", response_model=SignedUrlOut)

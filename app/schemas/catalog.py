@@ -6,20 +6,11 @@ class KourelOut(BaseModel):
 
     id: str
     name: str
+    slug: str
     city: str | None = None
     bio: str | None = None
     photo_url: str | None = None
     parent_id: str | None = None
-
-
-class VerseOut(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
-    id: str
-    position: int
-    text_arabic: str
-    translit: str | None = None
-    translation_fr: str | None = None
 
 
 class KhassaideOut(BaseModel):
@@ -37,16 +28,11 @@ class RecordingOut(BaseModel):
     duration_sec: int
     khassaide: KhassaideOut
     kourel: KourelOut
+    event_name: str | None = None
 
 
 class RecordingDetail(RecordingOut):
-    verses: list[VerseOut]
-
-
-class TimingOut(BaseModel):
-    verse_position: int
-    start_ms: int
-    end_ms: int
+    pass
 
 
 class SignedUrlOut(BaseModel):

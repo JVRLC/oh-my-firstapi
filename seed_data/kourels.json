@@ -5,14 +5,9 @@
     "bio": "Association mère qui chapeaute les kourels de la Hizbut Tarqiyyah à Touba.",
     "children": [
       {
-        "name": "Kourel Djaraaf",
+        "name": "Kourel Serigne Massamba",
         "city": "Touba",
-        "bio": "Sous-kourel de la Hizbut Tarqiyyah, quartier Djaraaf."
-      },
-      {
-        "name": "Kourel Darou Marnane",
-        "city": "Touba",
-        "bio": "Sous-kourel de la Hizbut Tarqiyyah, quartier Darou Marnane."
+        "bio": "Sous-kourel de la Hizbut Tarqiyyah, dirigé par Serigne Djily Ndiaye"
       }
     ]
   }
