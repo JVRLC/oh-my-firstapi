@@ -48,9 +48,6 @@ class Verse(Base):
     text_arabic: Mapped[str] = mapped_column(Text)
     translit: Mapped[str | None] = mapped_column(Text, nullable=True)
     translation_fr: Mapped[str | None] = mapped_column(Text, nullable=True)
-    translation_wo: Mapped[str | None] = mapped_column(Text, nullable=True)
-    # Set once a religious committee has approved the text.
-    is_validated: Mapped[bool] = mapped_column(Boolean, default=False)
 
     khassaide: Mapped[Khassaide] = relationship(back_populates="verses")
 
@@ -65,8 +62,6 @@ class Recording(Base):
     duration_sec: Mapped[int] = mapped_column(Integer)
     # Path relative to the CDN, signed on demand.
     audio_path: Mapped[str] = mapped_column(Text)
-    quality_high: Mapped[bool] = mapped_column(Boolean, default=False)
-    is_published: Mapped[bool] = mapped_column(Boolean, default=False)
     play_count: Mapped[int] = mapped_column(Integer, default=0)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
